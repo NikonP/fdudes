@@ -6,13 +6,37 @@
  * This code is licensed under a WTFPL.
  */
 
+/*
+WARNING: the code that follows will make you cry; a safety pig is provided below for your benefit.
+
+                         _
+ _._ _..._ .-',     _.._(`))
+'-. `     '  /-._.-'    ',/
+   )         \            '.
+  / _    _    |             \
+ |  a    a    /              |
+ \   .-.                     ;
+  '-('' ).-'       ,'       ;
+     '-;           |      .'
+        \           \    /
+        | 7  .__  _.-\   \
+        | |  |  ``/  /`  /
+       /,_|  |   /,_/   /
+          /,_/      '`-'
+*/
+
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <experimental/filesystem>
+#include <unordered_map>
+#include <list>
 
 namespace fs = std::experimental::filesystem;
 using namespace std;
+
+// Распределяет все файлы в указанной дирректории по из размеру
+unordered_map<unsigned long, list<fs::path>> sort_by_size(fs::path start_path);
 
 int main(int argc, char const *argv[]) {
     if(argc < 2) {
@@ -31,9 +55,34 @@ int main(int argc, char const *argv[]) {
         return 1;
     }
 
-    for(auto& p: fs::recursive_directory_iterator(start_path)) {
-        // do some magic...
+    unordered_map<unsigned long, list<fs::path>> files_by_size;
+
+    files_by_size = sort_by_size(start_path);
+
+    for(auto& [fsize, names] : files_by_size) {
+        cout << fsize << " | " << names.size() << '\n';
     }
 
     return 0;
+}
+
+unordered_map<unsigned long, list<fs::path>> sort_by_size(fs::path start_path) {
+    unordered_map<unsigned long, list<fs::path>> files_by_size;
+
+    for(auto& p: fs::recursive_directory_iterator(start_path)) {
+        if(!fs::is_regular_file(p)) {
+            continue;
+        }
+
+        unsigned long fsize = file_size(p);
+
+        if(files_by_size.count(fsize) > 0) {
+            files_by_size[fsize].push_back(p);
+        } else {
+            list<fs::path> new_list = {p};
+            files_by_size[fsize] = new_list;
+        }
+    }
+
+    return files_by_size;
 }
