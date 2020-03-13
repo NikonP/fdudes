@@ -31,6 +31,7 @@ WARNING: the code that follows will make you cry; a safety pig is provided below
 #include <experimental/filesystem>
 #include <unordered_map>
 #include <list>
+#include "hasher.h"
 
 namespace fs = std::experimental::filesystem;
 using namespace std;
@@ -65,7 +66,9 @@ int main(int argc, char const *argv[]) {
     files_by_size = sort_by_size(start_path);
 
     for(auto& [fsize, names] : files_by_size) {
-        cout << fsize << " | " << names.size() << '\n';
+        for(auto& n : names) {
+            cout << n << " | " << get_hash(n) << '\n';
+        }
     }
 
     return 0;
