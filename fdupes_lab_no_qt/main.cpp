@@ -36,8 +36,12 @@ WARNING: the code that follows will make you cry; a safety pig is provided below
 namespace fs = std::experimental::filesystem;
 using namespace std;
 
+typedef unordered_map<unsigned long long, list<fs::path>> ll_path_map;
+
 // Распределяет все файлы в указанной директории по из размеру
-unordered_map<unsigned long, list<fs::path>> sort_by_size(fs::path start_path);
+ll_path_map sort_by_size(fs::path start_path);
+
+ll_path_map sort_by_hash(list<fs::path> paths);
 
 int main(int argc, char const *argv[]) {
     if(argc < 2) {
@@ -61,28 +65,32 @@ int main(int argc, char const *argv[]) {
         return 1;
     }
 
-    unordered_map<unsigned long, list<fs::path>> files_by_size;
+    ll_path_map files_by_size = sort_by_size(start_path);
 
-    files_by_size = sort_by_size(start_path);
+    for(auto [fsize, paths] : files_by_size) {
+        if(paths.size() > 1) {
+            ll_path_map files_by_hash = sort_by_hash(paths);
 
-    for(auto& [fsize, names] : files_by_size) {
-        for(auto& n : names) {
-            cout << n << " | " << get_hash(n) << '\n';
+            for(auto [hash, paths] : files_by_hash) {
+                if(paths.size() > 1) {
+                    // compare byte by byte
+                }
+            }
         }
     }
 
     return 0;
 }
 
-unordered_map<unsigned long, list<fs::path>> sort_by_size(fs::path start_path) {
-    unordered_map<unsigned long, list<fs::path>> files_by_size;
+ll_path_map sort_by_size(fs::path start_path) {
+    ll_path_map files_by_size;
 
     for(auto& p: fs::recursive_directory_iterator(start_path)) {
         if(!fs::is_regular_file(p)) {
             continue;
         }
 
-        unsigned long fsize = file_size(p);
+        unsigned long long fsize = file_size(p);
 
         if(files_by_size.count(fsize) > 0) {
             files_by_size[fsize].push_back(p);
@@ -93,4 +101,20 @@ unordered_map<unsigned long, list<fs::path>> sort_by_size(fs::path start_path) {
     }
 
     return files_by_size;
+}
+
+ll_path_map sort_by_hash(list<fs::path> paths) {
+    ll_path_map files_by_hash;
+
+    for(fs::path p : paths) {
+        hashval hash = get_hash(p);
+        if(files_by_hash.count(hash) > 0) {
+            files_by_hash[hash].push_back(p);
+        } else {
+            list<fs::path> new_list = {p};
+            files_by_hash[hash] = new_list;
+        }
+    }
+
+    return files_by_hash;
 }

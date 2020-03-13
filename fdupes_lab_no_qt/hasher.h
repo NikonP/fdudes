@@ -3,4 +3,6 @@
 namespace fs = std::experimental::filesystem;
 using namespace std;
 
-unsigned long long get_hash(fs::path file_path);
+typedef unsigned long long hashval;
+
+hashval get_hash(fs::path file_path);

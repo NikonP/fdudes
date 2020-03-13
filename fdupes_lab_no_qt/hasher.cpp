@@ -10,7 +10,7 @@
 #include <experimental/filesystem>
 #include "hasher.h"
 
-unsigned long long get_hash(fs::path file_path) {
+hashval get_hash(fs::path file_path) {
     ifstream ifs(file_path, ifstream::in|ifstream::binary);
     char b;
     unsigned long long hash;
