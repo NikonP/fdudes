@@ -35,12 +35,12 @@ WARNING: the code that follows will make you cry; a safety pig is provided below
 namespace fs = std::experimental::filesystem;
 using namespace std;
 
-// Распределяет все файлы в указанной дирректории по из размеру
+// Распределяет все файлы в указанной директории по из размеру
 unordered_map<unsigned long, list<fs::path>> sort_by_size(fs::path start_path);
 
 int main(int argc, char const *argv[]) {
     if(argc < 2) {
-        std::cerr << "no directories specified" << '\n';
+        cerr << "no directories specified" << '\n';
         return 1;
     }
 
@@ -50,8 +50,13 @@ int main(int argc, char const *argv[]) {
         start_path = fs::current_path() / argv[1];
     }
 
+    if(!fs::is_directory(start_path)) {
+        cerr << start_path << " is not a directory" << '\n';
+        return 1;
+    }
+
     if(!fs::exists(start_path)) {
-        std::cerr << "no such directory " << start_path << '\n';
+        cerr << "no such directory " << start_path << '\n';
         return 1;
     }
 
