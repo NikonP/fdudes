@@ -43,6 +43,8 @@ ll_path_map sort_by_size(fs::path start_path);
 
 ll_path_map sort_by_hash(list<fs::path> paths);
 
+bool compare_by_bytes(fs::path file_1, fs::path file_2);
+
 int main(int argc, char const *argv[]) {
     if(argc < 2) {
         cerr << "no directories specified" << '\n';
@@ -117,4 +119,27 @@ ll_path_map sort_by_hash(list<fs::path> paths) {
     }
 
     return files_by_hash;
+}
+
+bool compare_by_bytes(fs::path file_1, fs::path file_2) {
+    ifstream ifs_1(file_1, ifstream::in|ifstream::binary);
+    ifstream ifs_2(file_2, ifstream::in|ifstream::binary);
+
+    char byte_1;
+    char byte_2;
+
+    while(ifs_1.good() && ifs_2.good()) {
+        ifs_1.read(&byte_1, 1);
+        ifs_2.read(&byte_2, 1);
+
+        if(byte_1 != byte_2) {
+            return false;
+        }
+
+        if(ifs_1.eof() && ifs_2.eof()) {
+            break;
+        }
+    }
+
+    return true;
 }
