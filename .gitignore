@@ -36,3 +36,6 @@ fdudes
 
 # Linux hidden files
 .directory
+
+# Test dir
+testdir*
