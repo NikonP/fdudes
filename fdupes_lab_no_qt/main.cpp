@@ -73,9 +73,16 @@ int main(int argc, char const *argv[]) {
         if(paths.size() > 1) {
             ll_path_map files_by_hash = sort_by_hash(paths);
 
-            for(auto [hash, paths] : files_by_hash) {
-                if(paths.size() > 1) {
-                    // compare byte by byte
+            for(auto [hash, paths_by_hash] : files_by_hash) {
+                if(paths_by_hash.size() > 1) {
+                    for(auto it = paths_by_hash.begin(); it != --paths_by_hash.end(); it++) {
+                        auto second_it = it;
+                        second_it++;
+                        for(; second_it != paths_by_hash.end(); second_it++) {
+                            cout << *it << " | " << *second_it << " " << compare_by_bytes(*it, *second_it) << '\n';
+                        }
+                    }
+                    std::cout << "-----------------------------" << '\n';
                 }
             }
         }
