@@ -62,24 +62,33 @@ int main(int argc, char const *argv[]) {
     // Превращаем путь в абсолютный
     path = QFileInfo(path).absoluteFilePath();
 
+    // Проверяем существование пути
     if(!QFileInfo(path).exists()) {
         cerr << "no such directory " << path.toStdString() << '\n';
         exit(EXIT_FAILURE);
     }
 
+    // Проверяем является ли путь директорией
     if(!QFileInfo(path).isDir()) {
         cerr << path.toStdString() << " is not a directory" << '\n';
         exit(EXIT_FAILURE);
     }
 
+    // Получаем все файлы отсортированные по размеру
     ll_path_map files_by_size = sort_by_size(path);
 
+    // Для каждой "корзины" сортируем по хэшам
     for(auto [fsize, paths_by_size] : files_by_size) {
         if(paths_by_size.size() > 1) {
+            // Получаем все файлы отсортированные по хэшам
             ll_path_map files_by_hash = sort_by_hash(paths_by_size);
 
+            // В каждой "корзине" сравниваем файлы по байтам
             for(auto [hash, paths_by_hash] : files_by_hash) {
                 while(paths_by_hash.size() > 1) {
+                    // Если РАЗНЫЕ ФАЙЛЫ имеют ОДИН ХЭШ ничего не произойдет
+                    // НО теоретически в одной "корзине" может быть несколько "корзин" дубликатов
+                    // Поэтому проверем всё
                     QString front = paths_by_hash.front();
                     paths_by_hash.pop_front();
 
