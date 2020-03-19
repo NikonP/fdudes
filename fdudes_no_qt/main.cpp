@@ -49,7 +49,7 @@ ll_path_map sort_by_hash(list<fs::path> paths);
 bool compare_by_bytes(fs::path file_1, fs::path file_2);
 
 int main(int argc, char const *argv[]) {
-    // Проверяем ест ьли аргумент
+    // Проверяем есть ли аргумент
     if(argc < 2) {
         cerr << "no directories specified" << '\n';
         return 1;

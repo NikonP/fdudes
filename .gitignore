@@ -33,6 +33,7 @@
 
 # Build
 fdudes
+fdudes_qt
 
 # Linux hidden files
 .directory
