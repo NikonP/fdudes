@@ -3,6 +3,8 @@
  *
  * Copyright (c) 2020, Nikon Podgorny <student@cs.karelia.ru>
  *
+ * https://github.com/NikonP/fdudes
+ *
  * This code is licensed under a WTFPL.
  */
 
