@@ -124,7 +124,7 @@ int main(int argc, char const *argv[]) {
 ll_path_map sort_by_size(QString start_path) {
     ll_path_map files_by_size;
 
-    QDirIterator it(start_path, QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator it(start_path, QDir::Files | QDir::Hidden, QDirIterator::Subdirectories);
     while (it.hasNext()) {
         QFile f(it.next());
 
